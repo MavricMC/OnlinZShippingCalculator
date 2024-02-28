@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONLINZ</title>
+</head>
+
+<body>
+    <script>
+        const shippment_list = [[]];
+
+        alert('Welcome to OnlinZ');
+        shippment_list[0].firstName = prompt('Please enter your first name').toLowerCase(); // Get first name and make all letters lowercase
+        shippment_list[0].firstName = shippment_list[0].firstName.charAt(0).toUpperCase() + shippment_list[0].firstName.slice(1); //Get first letter of first name and set to uppercase then get rest of first name and add to end
+
+        shippment_list[0].phoneNumber = prompt('Hello ' + shippment_list[0].firstName + '. Please enter your phone number').replace(' ', '');
+        shippment_list[0].phoneNumber = shippment_list[0].phoneNumber.replace(' ', '');
+        alert('Im going to report this number to the IRS: ' + shippment_list[0].phoneNumber);
+    </script>
+</body>
+
+</html>
