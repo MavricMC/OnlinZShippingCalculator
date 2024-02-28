@@ -11,9 +11,12 @@
     <script>
         const shippment_manifest = [[]];
 
+        const boxMin = 5; //centimetres
+        const boxMax = 100;
+
         //alert('Welcome to OnlinZ');
 
-        function getInput(name, question, numExpected, minLength, maxLength) {
+        function getInput(name, question, numExpected, minLength, maxLength, box) {
             //Keep asking question untill the user enters a valid one
             var input;
             var msg;
@@ -23,11 +26,17 @@
                     return null;//Return true if user clicks cancel
                 }
                 if (isNaN(input) && numExpected) {
-                    msg = 'Must be a number';//Check if first name entered isnt a number and should be
+                    msg = 'Must be a number';//Check if input isnt a number and should be
                 } else if (Number.isInteger(parseInt(input)) && !numExpected) {
-                    msg = 'Must not be a number';//Check if first name entered is a number and shouldnt be
+                    msg = 'Must not be a number';//Check if input is a number and shouldnt be
+                } else if (Number.isInteger(parseInt(input)) && box) {
+                    if (parseInt(input) < boxMin || parseInt(input) > boxMax) {
+                        msg = 'Box dimesions must be between ' + boxMin + ' and ' + boxMax + 'centimetres';//Check if the number entered is outside the range for box sizes
+                    } else {
+                        return input;//If not output box size
+                    }
                 } else if (input.length < minLength || input.length > maxLength) {
-                    msg = 'Must be ' + minLength + ' to ' + maxLength + ' characters long';//Check if phone number entered is not between minLength and maxLength characters long
+                    msg = 'Must be ' + minLength + ' to ' + maxLength + ' characters long';//Check if the imput is not between minLength and maxLength characters long
                 } else if (input == '') {
                     msg = 'This is a required field';//Check if nothing was entered
                 } else {
@@ -41,14 +50,35 @@
             var temp_array = [];//Temp array to store infomation about the return so it doesnt get stored if the user presses cancel
 
             //First name
-            temp_array.firstName = getInput('', 'Please enter your first name', false, 1, 25);//store the first name in the temp array
+            temp_array.firstName = getInput('', 'Please enter your first name', false, 1, 25, false);//store the first name in the temp array
             if (temp_array.firstName == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
             temp_array.firstName = temp_array.firstName.charAt(0).toUpperCase() + temp_array.firstName.slice(1).toLowerCase(); //Get first letter of first name and set to uppercase then get rest of first name and set to lower case
 
+            //Box height
+            temp_array.boxHeight = getInput(temp_array.firstName, 'Please enter the height of the box in centimetres', true, 1, 5, true);//store the phone number in the temp array
+            if (temp_array.boxHeight == null) {
+                return null;//Exit the calculator because the user pressed cancel
+            }
+            temp_array.boxHeight = temp_array.boxHeight.replace(' ', '');//Remove spaces
+
+            //Box width
+            temp_array.boxWidth = getInput(temp_array.firstName, 'Please enter the width of the box in centimetres', true, 1, 5, true);//store the phone number in the temp array
+            if (temp_array.boxWidth == null) {
+                return null;//Exit the calculator because the user pressed cancel
+            }
+            temp_array.boxWidth = temp_array.boxWidth.replace(' ', '');//Remove spaces
+
+            //Box length
+            temp_array.boxDepth = getInput(temp_array.firstName, 'Please enter the depth of the box in centimetres', true, 1, 5, true);//store the phone number in the temp array
+            if (temp_array.boxDepth == null) {
+                return null;//Exit the calculator because the user pressed cancel
+            }
+            temp_array.boxDepth = temp_array.boxDepth.replace(' ', '');//Remove spaces
+
             //Phone number
-            temp_array.phoneNumber = getInput(temp_array.firstName, 'Please enter your phone number', true, 4, 16);//store the phone number in the temp array
+            temp_array.phoneNumber = getInput(temp_array.firstName, 'Please enter your phone number', true, 4, 16, false);//store the phone number in the temp array
             if (temp_array.phoneNumber == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
