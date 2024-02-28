@@ -11,10 +11,22 @@
     <script>
         const shippment_manifest = [[]];
 
-        const boxMin = 5; //centimetres
+        const boxMin = 5;//centimetres
         const boxMax = 100;
 
+        const lowVolume = 6000;//centimetres^3
+        const highvolume = 100000;
+        const priceLow = 8;//Base price for shipping based on volume in $NZD I guess
+        const priceMed = 12;
+        const priceHigh = 15;
+
+        const shipping_locations = [[]];//Array of location to chose ot ship from and their price price mulipliers
+
         //alert('Welcome to OnlinZ');
+
+        function calulateVolume(height, width, depth) {
+            return height * width * depth;//Kinda unessasary function to calulate volume of the box
+        }
 
         function getInput(name, question, numExpected, minLength, maxLength, box) {
             //Keep asking question untill the user enters a valid one
@@ -76,6 +88,16 @@
                 return null;//Exit the calculator because the user pressed cancel
             }
             temp_array.boxDepth = temp_array.boxDepth.replace(' ', '');//Remove spaces
+
+            //Calculate volume and find base price
+            temp_array.boxVolume = calulateVolume(temp_array.boxHeight, temp_array.boxWidth, temp_array.boxDepth);
+            temp_array.basePrice = priceMed;
+            if (temp_array.boxVolume <= lowVolume) {
+                temp_array.basePrice = priceLow;
+            } else if (temp_array.boxVolume >= highvolume) {
+                temp_array.basePrice = priceHigh;
+            }
+            alert('Box volume is: ' + temp_array.boxVolume + ' and base price is: ' + temp_array.basePrice);
 
             //Phone number
             temp_array.phoneNumber = getInput(temp_array.firstName, 'Please enter your phone number', true, 4, 16, false);//store the phone number in the temp array
