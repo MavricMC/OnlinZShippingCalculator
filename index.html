@@ -20,15 +20,21 @@
         const priceMed = 12;
         const priceHigh = 15;
 
-        const shipping_locations = [[]];//Array of location to chose ot ship from and their price price mulipliers
+        const shipping_locations = [//Array of location to chose to ship from and their price price mulipliers
+            ['North Island', 1],
+            ['South Island', 1.5], 
+            ['Stewart Island', 2]
+        ];
 
         //alert('Welcome to OnlinZ');
+        //spaces removed to catch inputs with acedental extra spaces
+        //lowercase to catch different capitilization
 
         function calulateVolume(height, width, depth) {
             return height * width * depth;//Kinda unessasary function to calulate volume of the box
         }
 
-        function getInput(name, question, numExpected, minLength, maxLength, box) {
+        function getInput(name, question, numExpected, minLength, maxLength, box, island) {
             //Keep asking question untill the user enters a valid one
             var input;
             var msg;
@@ -39,6 +45,13 @@
                 }
                 if (isNaN(input) && numExpected) {
                     msg = 'Must be a number';//Check if input isnt a number and should be
+                } else if (isNaN(input) && island) {
+                    for (let index = 0; index < shipping_locations.length; ++index) {//Check against each island in the array. Cant use forEach() because its a function so return doesnt work
+                        if (input.replace(' ', '').toLowerCase() == shipping_locations[index][0].replace(' ', '').toLowerCase()) {//Remove spaces and make lower case to match input
+                            return index;
+                        }
+                    }
+                    msg = 'Must be a island on the list';
                 } else if (Number.isInteger(parseInt(input)) && !numExpected) {
                     msg = 'Must not be a number';//Check if input is a number and shouldnt be
                 } else if (Number.isInteger(parseInt(input)) && box) {
@@ -62,28 +75,28 @@
             var temp_array = [];//Temp array to store infomation about the return so it doesnt get stored if the user presses cancel
 
             //First name
-            temp_array.firstName = getInput('', 'Please enter your first name', false, 1, 25, false);//store the first name in the temp array
+            temp_array.firstName = getInput('', 'Please enter your first name', false, 1, 25, false, false);//store the first name in the temp array
             if (temp_array.firstName == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
             temp_array.firstName = temp_array.firstName.charAt(0).toUpperCase() + temp_array.firstName.slice(1).toLowerCase(); //Get first letter of first name and set to uppercase then get rest of first name and set to lower case
 
             //Box height
-            temp_array.boxHeight = getInput(temp_array.firstName, 'Please enter the height of the box in centimetres', true, 1, 5, true);//store the phone number in the temp array
+            temp_array.boxHeight = getInput(temp_array.firstName, 'Please enter the height of the box in centimetres', true, 1, 5, true, false);//store the phone number in the temp array
             if (temp_array.boxHeight == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
             temp_array.boxHeight = temp_array.boxHeight.replace(' ', '');//Remove spaces
 
             //Box width
-            temp_array.boxWidth = getInput(temp_array.firstName, 'Please enter the width of the box in centimetres', true, 1, 5, true);//store the phone number in the temp array
+            temp_array.boxWidth = getInput(temp_array.firstName, 'Please enter the width of the box in centimetres', true, 1, 5, true, false);//store the phone number in the temp array
             if (temp_array.boxWidth == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
             temp_array.boxWidth = temp_array.boxWidth.replace(' ', '');//Remove spaces
 
             //Box length
-            temp_array.boxDepth = getInput(temp_array.firstName, 'Please enter the depth of the box in centimetres', true, 1, 5, true);//store the phone number in the temp array
+            temp_array.boxDepth = getInput(temp_array.firstName, 'Please enter the depth of the box in centimetres', true, 1, 5, true, false);//store the phone number in the temp array
             if (temp_array.boxDepth == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
@@ -97,14 +110,47 @@
             } else if (temp_array.boxVolume >= highvolume) {
                 temp_array.basePrice = priceHigh;
             }
-            alert('Box volume is: ' + temp_array.boxVolume + ' and base price is: ' + temp_array.basePrice);
+            //alert('Box volume is: ' + temp_array.boxVolume + ' and base price is: ' + temp_array.basePrice);
+
+            //Island
+            var islands = '\n';
+            shipping_locations.forEach((element) => {//Loop thought and add each island in array to string
+                islands += '-' + element[0] + '\n';
+            });
+            //Get input
+            var index = getInput(temp_array.firstName, 'Which island are you located on:' + islands, false, 1, 35, false, true);//Get array index of chosen island
+            if (index == null) {
+                return null;//Exit the calculator because the user pressed cancel
+            }
+            temp_array.island = shipping_locations[index][0].toLowerCase();
+            temp_array.multiplier = shipping_locations[index][1];
+            //alert('You are on island: ' + temp_array.island + ' with multiplier: ' + temp_array.multiplier);
+
+            //Calculate price
+            temp_array.price = temp_array.basePrice * temp_array.multiplier;
+
+            //Last name
+            temp_array.lastName = getInput(temp_array.firstName, 'Please enter your last name', false, 1, 25, false, false);//store the last name in the temp array
+            if (temp_array.lastName == null) {
+                return null;//Exit the calculator because the user pressed cancel
+            }
+            temp_array.lastName = temp_array.lastName.charAt(0).toUpperCase() + temp_array.lastName.slice(1).toLowerCase(); //Get first letter of last name and set to uppercase then get rest of last name and set to lower case
+
+            //Address
+            temp_array.address = getInput(temp_array.firstName, 'Please enter your address', false, 1, 50, false, false);//store the address in the temp array
+            if (temp_array.address == null) {
+                return null;//Exit the calculator because the user pressed cancel
+            }
+            temp_array.lastName = temp_array.lastName.toLowerCase(); //Set to lower case
 
             //Phone number
-            temp_array.phoneNumber = getInput(temp_array.firstName, 'Please enter your phone number', true, 4, 16, false);//store the phone number in the temp array
+            temp_array.phoneNumber = getInput(temp_array.firstName, 'Please enter your phone number', true, 4, 16, false, false);//store the phone number in the temp array
             if (temp_array.phoneNumber == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
             temp_array.phoneNumber = temp_array.phoneNumber.replace(' ', '');//Remove spaces
+
+            alert('Full name: ' + temp_array.firstName + ' ' + temp_array.lastName + '\nAddress: ' + temp_array.address + '\nPhone number: ' + temp_array.phoneNumber + '\nReturn price: ' + temp_array.price);
 
             //Finish by returning stored info
             return temp_array;
