@@ -9,44 +9,60 @@
 
 <body>
     <script>
-        const shippment_list = [[]];
+        const shippment_manifest = [[]];
 
-        alert('Welcome to OnlinZ');
+        //alert('Welcome to OnlinZ');
 
-        function getShipping() {
-            //Keep asking for a name untill the user enters a valid one
+        function getInput(name, question, numExpected, minLength, maxLength) {
+            //Keep asking question untill the user enters a valid one
+            var input;
+            var msg;
             while (true) {
-                shippment_list[0].firstName = prompt('Please enter your first name');
-                if (shippment_list[0].firstName == null) {
-                    return; //Exit prosses
+                input = prompt('Hello ' + name + '. ' + question);//Ask the question and store the input
+                if (input == null) {
+                    return null;//Return true if user clicks cancel
                 }
-                shippment_list[0].firstName = shippment_list[0].firstName.charAt(0).toUpperCase() + shippment_list[0].firstName.slice(1).toLowerCase(); //Get first letter of first name and set to uppercase then get rest of first name and set to lower case
-                if (Number.parseInt(shippment_list[0].firstName) || shippment_list[0].firstName.length < 1 || shippment_list[0].firstName.length > 25 || shippment_list[0].firstName == '') {
-                    alert('Thats not a name ' + shippment_list[0].firstName + '. Please try again ');
+                if (isNaN(input) && numExpected) {
+                    msg = 'Must be a number';//Check if first name entered isnt a number and should be
+                } else if (Number.isInteger(parseInt(input)) && !numExpected) {
+                    msg = 'Must not be a number';//Check if first name entered is a number and shouldnt be
+                } else if (input.length < minLength || input.length > maxLength) {
+                    msg = 'Must be ' + minLength + ' to ' + maxLength + ' characters long';//Check if phone number entered is not between minLength and maxLength characters long
+                } else if (input == '') {
+                    msg = 'This is a required field';//Check if nothing was entered
                 } else {
-                    break;
+                    return input;//If the input is valid exit the loop and return the input
                 }
+                alert(msg + '. Please try again ');//Output the error message
             }
-
-            //Keep asking for phone number untill the user enters a valid one
-            while (true) {
-                shippment_list[0].phoneNumber = prompt('Hello ' + shippment_list[0].firstName + '. Please enter your phone number');
-                if (shippment_list[0].phoneNumber == null) {
-                    return; //Exit prosses
-                }
-                shippment_list[0].phoneNumber = shippment_list[0].phoneNumber.replace(' ', '');
-                if (isNaN(shippment_list[0].phoneNumber) || shippment_list[0].phoneNumber.length < 4 || shippment_list[0].phoneNumber.length > 16 || shippment_list[0].phoneNumber == '') {
-                    alert('Thats not a phone number ' + shippment_list[0].firstName + '. Please try again ');
-                } else {
-                    break;
-                }
-            }
-            alert('Im going to report this number to the IRS: ' + shippment_list[0].phoneNumber);
         }
 
-        getShipping()
+        function getShipping() {
+            var temp_array = [];//Temp array to store infomation about the return so it doesnt get stored if the user presses cancel
 
+            //First name
+            temp_array.firstName = getInput('', 'Please enter your first name', false, 1, 25);//store the first name in the temp array
+            if (temp_array.firstName == null) {
+                return null;//Exit the calculator because the user pressed cancel
+            }
+            temp_array.firstName = temp_array.firstName.charAt(0).toUpperCase() + temp_array.firstName.slice(1).toLowerCase(); //Get first letter of first name and set to uppercase then get rest of first name and set to lower case
 
+            //Phone number
+            temp_array.phoneNumber = getInput(temp_array.firstName, 'Please enter your phone number', true, 4, 16);//store the phone number in the temp array
+            if (temp_array.phoneNumber == null) {
+                return null;//Exit the calculator because the user pressed cancel
+            }
+            temp_array.phoneNumber = temp_array.phoneNumber.replace(' ', '');//Remove spaces
+
+            //Finish by returning stored info
+            return temp_array;
+        }
+
+        var output_array = getShipping();
+        if (output_array != null) {
+            shippment_manifest.push(output_array);//If the user didnt press cancel store the array of infomation about the return
+        }
+        console.log(shippment_manifest);
     </script>
 </body>
 
