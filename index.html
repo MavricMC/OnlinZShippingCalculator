@@ -62,8 +62,6 @@
                     }
                 } else if (input.length < minLength || input.length > maxLength) {
                     msg = 'Must be ' + minLength + ' to ' + maxLength + ' characters long';//Check if the imput is not between minLength and maxLength characters long
-                } else if (input == '') {
-                    msg = 'This is a required field';//Check if nothing was entered
                 } else {
                     return input;//If the input is valid exit the loop and return the input
                 }
