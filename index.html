@@ -139,7 +139,7 @@
             if (tempArray.address == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
-            tempArray.lastName = tempArray.lastName.toLowerCase(); //Set to lower case
+            tempArray.address = tempArray.address.toLowerCase(); //Set to lower case
             
             //Phone number
             tempArray.phoneNumber = getInput(tempArray.firstName, 'Please enter your phone number', true, 4, 16, false, false);//store the phone number in the temp array
