@@ -9,6 +9,7 @@
 
 <body>
     <script>
+        setTimeout(function () {//Short timeout to let html load before displaying prompts
         var shppmentManifest = [[]];
 
         const BOXMIN = 5;//Height, width, and depth minimum and maximum size in centimetres
@@ -26,7 +27,7 @@
             ['Stewart Island', 2]
         ];
 
-        alert('Welcome to OnlinZ\nPress OK or the enter key to start calulating your return shipping\nYou can press cancel at any time to exit the calulator.');
+        alert('Welcome to OnlinZ\nPress OK or the enter key to start calculating your return shipping\nYou can press cancel at any time to exit the calculator.');
 
         //Kinda unessasary function to calulate volume of the box. One line and only used once.
         function calulateVolume(height, width, depth) {
@@ -47,7 +48,7 @@
                     msg = 'Must be a number';//Check if input isnt a number and should be
                 } else if (isNaN(input) && island) {
                     for (let index = 0; index < SHIPPINGLOCATIONS.length; ++index) {//Check against each island in the array. Cant use forEach() because its a function so return doent exit the main input function
-                        if (input.replace(' ', '').toLowerCase() == SHIPPINGLOCATIONS[index][0].replace(' ', '').toLowerCase()) {//spaces removed to catch inputs with accidental extra spaces and lowercase to catch different capitilization
+                        if (input.replaceAll(' ', '').toLowerCase() == SHIPPINGLOCATIONS[index][0].replaceAll(' ', '').toLowerCase()) {//spaces removed to catch inputs with accidental extra spaces and lowercase to catch different capitilization
                             return index;
                         }
                     }
@@ -84,21 +85,21 @@
             if (tempArray.boxHeight == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
-            tempArray.boxHeight = tempArray.boxHeight.replace(' ', '');//Remove spaces
+            tempArray.boxHeight = tempArray.boxHeight.replaceAll(' ', '');//Remove spaces
 
             //Box width
             tempArray.boxWidth = getInput(tempArray.firstName, 'Please enter the width of the box in centimetres', true, 1, 5, true, false);//store the phone number in the temp array
             if (tempArray.boxWidth == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
-            tempArray.boxWidth = tempArray.boxWidth.replace(' ', '');//Remove spaces
+            tempArray.boxWidth = tempArray.boxWidth.replaceAll(' ', '');//Remove spaces
 
             //Box length
             tempArray.boxDepth = getInput(tempArray.firstName, 'Please enter the depth of the box in centimetres', true, 1, 5, true, false);//store the phone number in the temp array
             if (tempArray.boxDepth == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
-            tempArray.boxDepth = tempArray.boxDepth.replace(' ', '');//Remove spaces
+            tempArray.boxDepth = tempArray.boxDepth.replaceAll(' ', '');//Remove spaces
 
             //Calculate volume and find base price
             tempArray.boxVolume = calulateVolume(tempArray.boxHeight, tempArray.boxWidth, tempArray.boxDepth);
@@ -139,16 +140,16 @@
             if (tempArray.address == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
-            tempArray.lastName = tempArray.lastName.toLowerCase(); //Set to lower case
+            tempArray.address = tempArray.address.toLowerCase(); //Set to lower case
             
             //Phone number
             tempArray.phoneNumber = getInput(tempArray.firstName, 'Please enter your phone number', true, 4, 16, false, false);//store the phone number in the temp array
             if (tempArray.phoneNumber == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
-            tempArray.phoneNumber = tempArray.phoneNumber.replace(' ', '');//Remove spaces
+            tempArray.phoneNumber = tempArray.phoneNumber.replaceAll(' ', '');//Remove spaces
 
-            alert('Full name: ' + tempArray.firstName + ' ' + tempArray.lastName + '\nAddress: ' + tempArray.address + '\nPhone number: ' + tempArray.phoneNumber + '\nReturn price: ' + tempArray.price);
+            alert('Full name: ' + tempArray.firstName + ' ' + tempArray.lastName + '\nAddress: ' + tempArray.address + '\nPhone number: ' + tempArray.phoneNumber + '\nReturn price NZD$' + tempArray.price);
 
             //Finish by returning stored info
             return tempArray;
@@ -159,6 +160,7 @@
             shppmentManifest.push(outputArray);//If the user didnt press cancel store the array of infomation about the return
         }
         console.log(shppmentManifest);
+    }, 200);
     </script>
 </body>
 
