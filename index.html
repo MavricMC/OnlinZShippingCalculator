@@ -44,7 +44,7 @@
                 if (input == null) {
                     return null;//Return true if user clicks cancel
                 }
-                if (isNaN(input) && numExpected) {
+                if (isNaN(input.replaceAll(' ', '')) && numExpected) {
                     msg = 'Must be a number';//Check if input isnt a number and should be
                 } else if (isNaN(input) && island) {
                     for (let index = 0; index < SHIPPINGLOCATIONS.length; ++index) {//Check against each island in the array. Cant use forEach() because its a function so return doent exit the main input function
@@ -53,10 +53,10 @@
                         }
                     }
                     msg = 'Must be a island on the list';
-                } else if (Number.isInteger(parseInt(input)) && !numExpected) {
+                } else if (Number.isInteger(parseInt(input.replaceAll(' ', ''))) && !numExpected) {
                     msg = 'Must not be a number';//Check if input is a number and shouldnt be
-                } else if (Number.isInteger(parseInt(input)) && box) {
-                    if (parseInt(input) < BOXMIN || parseInt(input) > BOXMAX) {
+                } else if (Number.isInteger(parseInt(input.replaceAll(' ', ''))) && box) {
+                    if (parseInt(input.replaceAll(' ', '')) < BOXMIN || parseInt(input.replaceAll(' ', '')) > BOXMAX) {
                         msg = 'Box dimesions must be between ' + BOXMIN + ' and ' + BOXMAX + 'centimetres';//Check if the number entered is outside the range for box sizes
                     } else {
                         return input;//If not output box size
