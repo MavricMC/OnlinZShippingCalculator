@@ -46,7 +46,7 @@
                 }
                 if (isNaN(input.replaceAll(' ', '')) && numExpected) {
                     msg = 'Must be a number';//Check if input isnt a number and should be
-                } else if (isNaN(input) && island) {
+                } else if (isNaN(input.replaceAll(' ', '')) && island) {
                     for (let index = 0; index < SHIPPINGLOCATIONS.length; ++index) {//Check against each island in the array. Cant use forEach() because its a function so return doent exit the main input function
                         if (input.replaceAll(' ', '').toLowerCase() == SHIPPINGLOCATIONS[index][0].replaceAll(' ', '').toLowerCase()) {//spaces removed to catch inputs with accidental extra spaces and lowercase to catch different capitilization
                             return index;
