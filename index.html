@@ -9,17 +9,23 @@
 
 <body>
     <script>
-        setTimeout(function () {//Short timeout to let html load before displaying prompts
-        var shppmentManifest = [[]];
+    setTimeout(function () {//Short timeout to let html load before displaying prompts
+        var shippmentManifest = [[]];
 
         const BOXMIN = 5;//Height, width, and depth minimum and maximum size in centimetres
         const BOXMAX = 100;
 
         const LOWVOLUME = 6000;//Base prices volume ranges in centimetres^3
         const HIGHVOLUME = 100000;
-        const PRICELOW = 8;//Base prices for shipping based on volume in $NZD I guess
+        const PRICELOW = 8;//Base prices for shipping based on volume in $NZD
         const PRICEMED = 12;
         const PRICEHIGH = 15;
+
+        const defaultMaxLength = 32; //Max length of imputs without specific requirements.
+        const defaultMinLength = 1; //Max length of imputs without specific requirements. Prevents blank inputs being accepted as all prompts are required at the moment.
+        const addressMaxLength = 50; //An address can be very long so this input get extra.
+        const phoneNumberMaxLength = 16; //New Zealand phone numbers have a specific max length.
+        const phoneNumberMinLength = 4; //New Zealand phone numbers have a specific min length.
 
         const SHIPPINGLOCATIONS = [//Array of location to chose to ship from and their price price mulipliers
             ['North Island', 1],
@@ -27,10 +33,8 @@
             ['Stewart Island', 2]
         ];
 
-        alert('Welcome to OnlinZ\nPress OK or the enter key to start calculating your return shipping\nYou can press cancel at any time to exit the calculator.');
-
-        //Kinda unessasary function to calulate volume of the box. One line and only used once.
-        function calulateVolume(height, width, depth) {
+        //Function to calculate volume of the box. One line and only used once.
+        function calculateVolume(height, width, depth) {
             return height * width * depth;
         }
 
@@ -44,72 +48,81 @@
                 if (input == null) {
                     return null;//Return true if user clicks cancel
                 }
+
                 if ((isNaN(input.replaceAll(' ', '')) || !Number.isInteger(parseInt(input.replaceAll(' ', '')))) && numExpected) {
                     msg = 'Must be a number';//Check if input isnt a number and should be
-                } else if (island) {
+
+                } else if (isNaN(input.replaceAll(' ', '')) && island) {
                     for (let index = 0; index < SHIPPINGLOCATIONS.length; ++index) {//Check against each island in the array. Cant use forEach() because its a function so return doent exit the main input function
                         if (input.replaceAll(' ', '').toLowerCase() == SHIPPINGLOCATIONS[index][0].replaceAll(' ', '').toLowerCase()) {//spaces removed to catch inputs with accidental extra spaces and lowercase to catch different capitilization
                             return index;
                         }
                     }
                     msg = 'Must be a island on the list';
+
                 } else if (!isNaN(input.replaceAll(' ', '')) && !numExpected) {
                     msg = 'Must not be all numbers';//Check if input is a number and shouldnt be
+
                 } else if (box) {
                     if (parseFloat(input.replaceAll(' ', '')) < BOXMIN || parseFloat(input.replaceAll(' ', '')) > BOXMAX) {
-                        msg = 'Box dimesions must be between ' + BOXMIN + ' and ' + BOXMAX + 'centimetres';//Check if the number entered is outside the range for box sizes
+                        msg = 'Box dimesions must be between ' + BOXMIN + ' and ' + BOXMAX + ' centimetres';//Check if the number entered is outside the range for box sizes
                     } else {
                         return input;//If not output box size
                     }
+
                 } else if (input.length < minLength || input.length > maxLength) {
                     msg = 'Must be ' + minLength + ' to ' + maxLength + ' characters long';//Check if the imput is not between minLength and maxLength characters long
+
                 } else {
                     return input;//If the input is valid exit the loop and return the input
                 }
+
                 alert(msg + '. Please try again ');//Output the error message
             }
         }
 
+        //Function to get all inputs to calculate and display infomation then store everything in the shippment manifest
         function getShipping() {
+            alert('Welcome to OnlinZ\nPress OK or the enter key to start calculating your return shipping\nYou can press cancel at any time to exit the calculator.');
+
             var tempArray = [];//Temp array to store infomation about the return so it doesnt get stored if the user presses cancel
 
             //First name
-            tempArray.firstName = getInput('', 'Please enter your first name', false, 1, 25, false, false);//store the first name in the temp array
+            tempArray.firstName = getInput('', 'Please enter your first name', false, 1, defaultMaxLength, false, false);//store the first name in the temp array
             if (tempArray.firstName == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
             tempArray.firstName = tempArray.firstName.charAt(0).toUpperCase() + tempArray.firstName.slice(1).toLowerCase(); //Get first letter of first name and set to uppercase then get rest of first name and set to lower case
 
             //Box height
-            tempArray.boxHeight = getInput(tempArray.firstName, 'Please enter the height of the box in centimetres', true, 1, 5, true, false);//store the phone number in the temp array
+            tempArray.boxHeight = getInput(tempArray.firstName, 'Please enter the height of the box in centimetres', true, defaultMinLength, defaultMaxLength, true, false);//store the phone number in the temp array
             if (tempArray.boxHeight == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
             tempArray.boxHeight = tempArray.boxHeight.replaceAll(' ', '');//Remove spaces
 
             //Box width
-            tempArray.boxWidth = getInput(tempArray.firstName, 'Please enter the width of the box in centimetres', true, 1, 5, true, false);//store the phone number in the temp array
+            tempArray.boxWidth = getInput(tempArray.firstName, 'Please enter the width of the box in centimetres', true, defaultMinLength, defaultMaxLength, true, false);//store the phone number in the temp array
             if (tempArray.boxWidth == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
             tempArray.boxWidth = tempArray.boxWidth.replaceAll(' ', '');//Remove spaces
 
             //Box length
-            tempArray.boxDepth = getInput(tempArray.firstName, 'Please enter the depth of the box in centimetres', true, 1, 5, true, false);//store the phone number in the temp array
+            tempArray.boxDepth = getInput(tempArray.firstName, 'Please enter the depth of the box in centimetres', true, defaultMinLength, defaultMaxLength, true, false);//store the phone number in the temp array
             if (tempArray.boxDepth == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
             tempArray.boxDepth = tempArray.boxDepth.replaceAll(' ', '');//Remove spaces
 
             //Calculate volume and find base price
-            tempArray.boxVolume = calulateVolume(tempArray.boxHeight, tempArray.boxWidth, tempArray.boxDepth);
+            tempArray.boxVolume = calculateVolume(tempArray.boxHeight, tempArray.boxWidth, tempArray.boxDepth);
             tempArray.basePrice = PRICEMED;
             if (tempArray.boxVolume <= LOWVOLUME) {
                 tempArray.basePrice = PRICELOW;
             } else if (tempArray.boxVolume >= HIGHVOLUME) {
                 tempArray.basePrice = PRICEHIGH;
             }
-            //alert('Box volume is: ' + tempArray.boxVolume + ' and base price is: ' + tempArray.basePrice);
             
             //Island
             var islands = '\n';
@@ -117,49 +130,52 @@
                 islands += '-' + element[0] + '\n';
             });
             //Get input
-            var index = getInput(tempArray.firstName, 'Which island are you located on:' + islands, false, 1, 35, false, true);//Get array index of chosen island
+            var index = getInput(tempArray.firstName, 'Which island are you located on:' + islands, false, defaultMinLength, defaultMaxLength, false, true);//Get array index of chosen island
             if (index == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
             tempArray.island = SHIPPINGLOCATIONS[index][0].toLowerCase();
             tempArray.multiplier = SHIPPINGLOCATIONS[index][1];
-            //alert('You are on island: ' + tempArray.island + ' with multiplier: ' + tempArray.multiplier);
 
             //Calculate price
             tempArray.price = tempArray.basePrice * tempArray.multiplier;
 
             //Last name
-            tempArray.lastName = getInput(tempArray.firstName, 'Please enter your last name', false, 1, 25, false, false);//store the last name in the temp array
+            tempArray.lastName = getInput(tempArray.firstName, 'Please enter your last name', false, defaultMinLength, defaultMaxLength, false, false);//store the last name in the temp array
             if (tempArray.lastName == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
             tempArray.lastName = tempArray.lastName.charAt(0).toUpperCase() + tempArray.lastName.slice(1).toLowerCase(); //Get first letter of last name and set to uppercase then get rest of last name and set to lower case
             
             //Address
-            tempArray.address = getInput(tempArray.firstName, 'Please enter your address', false, 5, 50, false, false);//store the address in the temp array
+            tempArray.address = getInput(tempArray.firstName, 'Please enter your address', false, defaultMinLength, addressMaxLength, false, false);//store the address in the temp array
             if (tempArray.address == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
             tempArray.address = tempArray.address.toLowerCase(); //Set to lower case
             
             //Phone number
-            tempArray.phoneNumber = getInput(tempArray.firstName, 'Please enter your phone number', true, 4, 16, false, false);//store the phone number in the temp array
+            tempArray.phoneNumber = getInput(tempArray.lastName, 'Please enter your phone number', true, phoneNumberMinLength, phoneNumberMaxLength, false, false);//store the phone number in the temp array
             if (tempArray.phoneNumber == null) {
                 return null;//Exit the calculator because the user pressed cancel
             }
             tempArray.phoneNumber = tempArray.phoneNumber.replaceAll(' ', '');//Remove spaces
 
+            //Display all required infomation
             alert('Full name: ' + tempArray.firstName + ' ' + tempArray.lastName + '\nAddress: ' + tempArray.address + '\nPhone number: ' + tempArray.phoneNumber + '\nReturn price NZD$' + tempArray.price);
 
             //Finish by returning stored info
             return tempArray;
         }
 
-        var outputArray = getShipping();
-        if (outputArray != null) {
-            shppmentManifest.push(outputArray);//If the user didnt press cancel store the array of infomation about the return
+        //Run get shipping then store the out put of the function forevery to allow multipul uses of the calculator
+        var outputArray;
+        while (true) {
+            outputArray = getShipping();
+            if (outputArray != null) {
+                shippmentManifest.push(outputArray);//If user didnt press cancel then store the infomation returned by the function in the shippment manifest
+            }
         }
-        console.log(shppmentManifest);
     }, 200);
     </script>
 </body>
